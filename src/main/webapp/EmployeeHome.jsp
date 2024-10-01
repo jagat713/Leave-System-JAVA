@@ -111,6 +111,17 @@
             background-color: #45a049;
         }
 
+        /* Alert styles */
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
     </style>
 </head>
 <body>
@@ -122,6 +133,18 @@
         <h1>Employee Dashboard</h1>
         <p>Welcome, <%= employeeData.getEmployeeName() %></p>
     </div>
+
+    <!-- Message Display -->
+    <% 
+        String message = (String) request.getAttribute("message");
+        if (message != null) { 
+    %>
+        <div class="alert">
+            <%= message %>
+        </div>
+    <% 
+        } 
+    %>
 
     <!-- Navigation Bar -->
     <div class="nav">
@@ -145,7 +168,7 @@
         <!-- Section to Apply for Leave -->
         <div class="section">
             <h2>Apply for Leave</h2>
-            <form class="apply-leave-form" action="applyLeave.jsp" method="post">
+            <form class="apply-leave-form" action="EmployeeLeaveApplicationServlet" method="post">
                 <label for="leaveType">Leave Type:</label>
                 <select id="leaveType" name="leaveType" required>
                     <option value="Sick Leave">Sick Leave</option>
@@ -161,6 +184,9 @@
 
                 <label for="reason">Reason:</label>
                 <textarea id="reason" name="reason" rows="4" required></textarea>
+                <input type="hidden" name="employeeId" value="<%= employeeData.getEmployeeId() %>">
+                <input type="hidden" name="employeeName" value="<%= employeeData.getEmployeeName() %>">
+                <input type="hidden" name="employeeLeaveBalance" value="<%= employeeData.getEmployeeLeaveBalance() %>">
 
                 <button type="submit">Submit Leave Application</button>
             </form>

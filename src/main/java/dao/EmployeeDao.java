@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import ModelClass.EmployeeModel;
+import ModelClass.LeavesModel;
 
 public class EmployeeDao {
 	public static Connection getConnection() throws SQLException, ClassNotFoundException
@@ -89,5 +90,45 @@ public class EmployeeDao {
 	    }
 	    return EmployeeData;
 	}
+	
+	public boolean LeaveApplicationSubmitStatus(LeavesModel leave, EmployeeModel employee) {
+	    boolean Status = false;
+	    Connection con = null;
+	    PreparedStatement st = null;
+	    
+	    try {
+	        System.out.println("Leave Type in DAO: " + leave.getLeaveType());
+	        System.out.println("Employee Name in DAO: " + employee.getEmployeeName()); // Check here
+	        System.out.println("Employee ID in DAO: " + employee.getEmployeeId()); // Check here
+	        
+	        con = EmployeeDao.getConnection();
+	        st = con.prepareStatement("INSERT INTO leave_details (leave_type, leave_start_date, leave_end_date, leave_reason, employee_id, employee_name) VALUES (?, ?, ?, ?, ?, ?);");
+	        
+	        // Use leave and employee data correctly
+	        st.setString(1, leave.getLeaveType());
+	        st.setString(2, leave.getStartDate());
+	        st.setString(3, leave.getEndDate());
+	        st.setString(4, leave.getLeaveReason());
+	        st.setLong(5, employee.getEmployeeId()); // Make sure this is correct
+	        st.setString(6, employee.getEmployeeName()); // This should also have data
+	        
+	        // Execute the update
+	        int rowsAffected = st.executeUpdate();
+	        Status = rowsAffected > 0; // If rows were affected, set status to true
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (st != null) st.close();
+	            if (con != null) con.close();
+	        } catch (Exception e2) {
+	            e2.printStackTrace();
+	        }
+	    }
+	    return Status;
+	}
+
 
 	}
